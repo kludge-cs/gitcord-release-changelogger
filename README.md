@@ -9,12 +9,9 @@ use, courtesy of Kludge Cyber Systems.
 
 ## Usage
 
-Gitcord Release Changelogger, as an action, makes use of the following secrets:
-- `${{ secrets.RELEASE_WEBHOOK }}`: the Discord webhook URL to pipe output to
+You may find documentation and examples at [the usage docs].
 
-For more information, see the [GitHub Secrets docs].
-
-[GitHub Secrets docs]: https://docs.github.com/en/free-pro-team@latest/actions/reference/encrypted-secrets
+[the usage docs]: USAGE.md
 
 ## Licensing
 
