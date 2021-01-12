@@ -5,6 +5,12 @@ inputs:
   discord-websocket:
     description: "URL for the Discord websocket. Should be passed via secrets."
     required: true
+  release-body:
+    description: "Markdown body of the GitHub release, without the header line."
+    required: true
+  release-name:
+    description: "Name to use when sending the release to Discord."
+    required: true
 outputs:
   discord-api-result:
     description: "Result status from Discord API."
@@ -12,15 +18,10 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - id: "morph-markdown"
-      run: "export BODY=$(echo ${{ github.event.release.body }} | -r ':a;N;$!ba;s/\n/\t\t/g;s/\t\t\t\t/\t\t/g;s/- +//g;s/### ([^\t]+)\t\t/\"}, {\"name\": \"\1\", \"value\": \"/g;s/^\"}, //;s/$/\"}/g;s/\t\t/\n/g')"
-      shell: "bash"
-    - id: "get-name"
-      run:  "export NAME=${$(${{ github.event.release.name }}):-$(${{ github.event.release.tag_name }})}"
-      shell: "bash"
     - id: "discord-post"
-      run: "echo ::set-output name=response::$(curl -X POST \
-          -H 'Content-Type: application/json' \
-          -d '{\"username\": \"GitHub Release\", \"embeds\": [{\"title\": \"$NAME\", \"fields\": [$FIELDS]}}]' \
-          ${{ inputs.discord-websocket }})"
-      shell: 'bash'
+      run: ./gitcord-release-changelogger.sh
+      shell: "bash"
+      env:
+        WEBSOCKET: ${{ inputs.discord-websocket }}
+        RELEASE_BODY: ${{ inputs.release-body }}
+        RELEASE_NAME: ${{ inputs.release-name }}

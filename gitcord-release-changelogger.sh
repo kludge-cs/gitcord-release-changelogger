@@ -1,9 +1,5 @@
 #!/usr/bin/env bash
-if [ $# -ne 3 ]; then
-	echo "Usage: gitcord-release-changelogger.sh <URL> <BODY> <NAME>"
-	exit 1
-fi
-BODY=$(echo "$2" | sed -r \
+BODY=$(echo "$RELEASE_BODY" | sed -r \
 	-e ':a' \
 	-e 'N' \
 	-e '$!ba' \
@@ -16,5 +12,5 @@ BODY=$(echo "$2" | sed -r \
 	-e 's/\t\t/\\n/g')
 echo ::set-output name=response::$(curl -X POST \
      -H "Content-Type: application/json" \
-     -d "{\"username\": \"GitHub Release\", \"embeds\": [{\"title\": \"$3\", \"fields\": [$BODY]}]}" \
-	 $1)
+     -d "{\"username\": \"GitHub Release\", \"embeds\": [{\"title\": \"$RELEASE_NAME\", \"fields\": [$BODY]}]}" \
+	 "$WEBSOCKET")
