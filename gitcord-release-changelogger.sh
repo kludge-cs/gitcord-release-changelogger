@@ -9,7 +9,9 @@ BODY=$(echo "$RELEASE_BODY" | sed -r \
 	-e 's/^"}, //' \
 	-e 's/$/"}/g' \
 	-e 's/\t\t/\\n/g')
+PAYLOAD="{\"username\": \"GitHub Release\", \"embeds\": [{\"title\": \"$RELEASE_NAME\", \"fields\": [$BODY]}]}"
+echo "$PAYLOAD"
 echo ::set-output name=response::$(curl -X POST \
      -H "Content-Type: application/json" \
-     -d "{\"username\": \"GitHub Release\", \"embeds\": [{\"title\": \"$RELEASE_NAME\", \"fields\": [$BODY]}]}" \
+	 -d "$PAYLOAD" \
 	 "$WEBSOCKET")
