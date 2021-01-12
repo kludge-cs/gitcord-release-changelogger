@@ -18,8 +18,11 @@ outputs:
 runs:
   using: "composite"
   steps:
+    - id: "fetch-script"
+      run: "curl -o script.sh https://raw.githubusercontent.com/kludge-cs/gitcord-release-changelogger/master/gitcord-release-changelogger.sh &>/dev/null && chmod +x script.sh"
+      shell: "bash"
     - id: "discord-post"
-      run: ./gitcord-release-changelogger.sh
+      run: "./script.sh"
       shell: "bash"
       env:
         WEBSOCKET: ${{ inputs.discord-websocket }}
