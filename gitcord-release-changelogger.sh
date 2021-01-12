@@ -1,4 +1,3 @@
-#!/usr/bin/env bash
 BODY=$(echo "$RELEASE_BODY" | sed -r \
 	-e ':a' \
 	-e 'N' \
