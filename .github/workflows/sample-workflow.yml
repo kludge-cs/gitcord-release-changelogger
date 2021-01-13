@@ -1,0 +1,20 @@
+name: "CD: Changelog -> Discord"
+on:
+  release:
+    types: [published]
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+    - name: "Parse release name"
+      run: "export RELEASE=$(echo \"${{ github.event.release.name }}\") && \
+            echo \"NAME=${RELEASE:-\\\"${{ github.event.release.tag_name }}\\\"}\" >> $GITHUB_ENV"
+    - name: "Run gitcord-release-changelogger"
+      uses: kludge-cs/gitcord-release-changelogger@master
+      with:
+        discord-websocket: ${{ secrets.RELEASE_WEBHOOK }}
+        release-body: ${{ github.event.release.body }}
+        release-name: ${{ env.NAME }}
