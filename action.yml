@@ -2,8 +2,8 @@ name: "Gitcord Release Changelogger"
 description: "Pipe changelog information from a GitHub release to Discord."
 author: "Tyler J. Russell (Kludge Cyber Systems)"
 inputs:
-  discord-websocket:
-    description: "URL for the Discord websocket. Should be passed via secrets."
+  discord-webhook:
+    description: "URL for the Discord webhook. Should be passed via secrets."
     required: true
   release-body:
     description: "Markdown body of the GitHub release, without the header line."
@@ -12,6 +12,9 @@ inputs:
     description: "Name to use when sending the release to Discord."
     required: true
 outputs:
+  discord-payload:
+    description: "Payload to be sent to the webhook. This is returned in case you wish to morph the payload yourself before POSTing it."
+    value: ${{ steps.generate-payload.outputs.payload }}
   discord-api-result:
     description: "Result status from Discord API."
     value: ${{ steps.discord-post.outputs.response }}
@@ -21,10 +24,19 @@ runs:
     - id: "fetch-script"
       run: "curl -o script.sh https://raw.githubusercontent.com/kludge-cs/gitcord-release-changelogger/master/gitcord-release-changelogger.sh &>/dev/null && chmod +x script.sh"
       shell: "bash"
-    - id: "discord-post"
+    - id: "generate-payload"
       run: "./script.sh"
       shell: "bash"
       env:
-        WEBSOCKET: ${{ inputs.discord-websocket }}
         RELEASE_BODY: ${{ inputs.release-body }}
         RELEASE_NAME: ${{ inputs.release-name }}
+    - id: "discord-post"
+      run: "echo ::set-output name=response::$(curl --fail \
+            -X POST \
+            -H 'Content-Type: application/json' \
+            -d \"$PAYLOAD\" \
+            \"$WEBHOOK\")"
+      shell: "bash"
+      env:
+        PAYLOAD: ${{ steps.generate-payload.outputs.payload }}
+        WEBHOOK: ${{ inputs.discord-webhook }}
