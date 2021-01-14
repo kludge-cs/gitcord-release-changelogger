@@ -34,9 +34,6 @@ runs:
       run: "echo ::set-output name=response::$(curl --fail \
             -X POST \
             -H 'Content-Type: application/json' \
-            -d \"$PAYLOAD\" \
-            \"$WEBHOOK\")"
+            -d '${{ steps.generate-payload.outputs.payload }}' \
+            \"${{ inputs.discord-webhook }}\")"
       shell: "bash"
-      env:
-        PAYLOAD: ${{ steps.generate-payload.outputs.payload }}
-        WEBHOOK: ${{ inputs.discord-webhook }}
