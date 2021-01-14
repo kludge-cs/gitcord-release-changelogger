@@ -15,7 +15,3 @@ BODY=$(echo "$RELEASE_BODY" | sed -r \
 	-e 's/\{"name": ".+", "value": "\\n"\}, //g')
 PAYLOAD="{\"username\": \"GitHub Release\", \"avatar_url\": \"https://github.com/kludge-cs/gitcord-release-changelogger/raw/master/GitHub-Mark-120px-plus.png\", \"embeds\": [{\"title\": \"$RELEASE_NAME\", \"fields\": [$BODY]}]}"
 echo ::set-output name=payload::$PAYLOAD
-echo ::set-output name=response::$(curl -X POST \
-     -H "Content-Type: application/json" \
-	 -d "$PAYLOAD" \
-	 "$WEBSOCKET")
