@@ -31,7 +31,7 @@ runs:
         RELEASE_BODY: ${{ inputs.release-body }}
         RELEASE_NAME: ${{ inputs.release-name }}
     - id: "discord-post"
-      run: "echo ::set-output name=response::$(curl --fail \
+      run: "set -e && echo ::set-output name=response::$(curl -i --fail \
             -X POST \
             -H 'Content-Type: application/json' \
             -d '${{ steps.generate-payload.outputs.payload }}' \
