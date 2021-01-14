@@ -1,4 +1,4 @@
-# Gitcord Release Changelogger v1.0.0
+# Gitcord Release Changelogger v2.0.0
 
 Gitcord Release Changelogger is a GitHub action designed for piping release
 events to a Discord channel, for convenience. This solution was designed
