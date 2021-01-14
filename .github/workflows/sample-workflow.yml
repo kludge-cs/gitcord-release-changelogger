@@ -10,11 +10,11 @@ jobs:
         shell: bash
     steps:
     - name: "Parse release name"
-	  id: "get-release-name"
+      id: "get-release-name"
       run: "echo ::set-output name=name::${RELEASE:-$TAG}"
-	  env:
-	    RELEASE: ${{ github.event.release.name }}
-		TAG: ${{ github.event.release.tag_name }}
+      env:
+        RELEASE: ${{ github.event.release.name }}
+        TAG: ${{ github.event.release.tag_name }}
     - name: "Crosspost changelog to Discord"
       uses: kludge-cs/gitcord-release-changelogger@v2
       with:
