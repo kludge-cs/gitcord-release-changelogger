@@ -1,9 +1,15 @@
 # Usage
 
 Gitcord Release Changelogger, as an action, makes use of the following inputs:
-- `discord-websocket`: URL for the Discord websocket.
-- `release-name`: Pre-parsed name of the release, to allow for custom naming conventions.
+- `discord-webhook`: URL for the Discord webhook.
+- `release-name`: Pre-parsed name of the release, to allow for custom naming
+conventions.
 - `release-body`: Markdown from the release to parse.
+
+These outputs are also provided:
+- `discord-payload`: The JSON payload to be sent to Discord, returned so you may
+perform any additional parsing before sending to Discord.
+- `discord-api-result`: The `curl` log from Discord.
 
 For more information, see the GitHub actions inputs [usage docs].
 
@@ -20,11 +26,16 @@ BaSH, `curl`, `echo`, and `sed`.
 
 # Examples
 
+Note that due to the modular nature of gitcord-release-changelogger, you may
+supply an empty webhook address and just use the `discord-payload` output to
+perform your own additional pre-parsing before you send the payload to a Discord
+webhook.
+
 The default recommended implementation is as follows (this is also available at
 [sample-workflow.yml](.github/workflows/sample-workflow.yml):
 
 ```yaml
-name: "CD: Changelog -> Discord"
+name: "CD: Crosspost Changelog"
 on:
   release:
     types: [published]
@@ -36,14 +47,17 @@ jobs:
         shell: bash
     steps:
     - name: "Parse release name"
-      run: "export RELEASE=$(echo \"${{ github.event.release.name }}\") && \
-            echo \"NAME=${RELEASE:-\\\"${{ github.event.release.tag_name }}\\\"}\" >> $GITHUB_ENV"
-    - name: "Run gitcord-release-changelogger"
-      uses: kludge-cs/gitcord-release-changelogger@v1
+	  id: "get-release-name"
+      run: "::set-output name=name::${RELEASE:-$TAG}"
+	  env:
+	    RELEASE: ${{ github.event.release.name }}
+		TAG: ${{ github.event.release.tag_name }}
+    - name: "Crosspost changelog to Discord"
+      uses: kludge-cs/gitcord-release-changelogger@v2
       with:
-        discord-websocket: ${{ secrets.RELEASE_WEBHOOK }}
+        discord-webhook: ${{ secrets.RELEASE_WEBHOOK }}
         release-body: ${{ github.event.release.body }}
-        release-name: ${{ env.NAME }}
+        release-name: ${{ steps.get-release-name.outputs.name }}
 ```
 
 # In action

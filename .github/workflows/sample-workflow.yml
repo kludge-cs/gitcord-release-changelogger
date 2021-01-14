@@ -1,4 +1,4 @@
-name: "CD: Changelog -> Discord"
+name: "CD: Crosspost Changelog"
 on:
   release:
     types: [published]
@@ -10,11 +10,14 @@ jobs:
         shell: bash
     steps:
     - name: "Parse release name"
-      run: "export RELEASE=$(echo \"${{ github.event.release.name }}\") && \
-            echo \"NAME=${RELEASE:-\\\"${{ github.event.release.tag_name }}\\\"}\" >> $GITHUB_ENV"
-    - name: "Run gitcord-release-changelogger"
-      uses: kludge-cs/gitcord-release-changelogger@master
+	  id: "get-release-name"
+      run: "echo ::set-output name=name::${RELEASE:-$TAG}"
+	  env:
+	    RELEASE: ${{ github.event.release.name }}
+		TAG: ${{ github.event.release.tag_name }}
+    - name: "Crosspost changelog to Discord"
+      uses: kludge-cs/gitcord-release-changelogger@v2
       with:
-        discord-websocket: ${{ secrets.RELEASE_WEBHOOK }}
+        discord-webhook: ${{ secrets.RELEASE_WEBHOOK }}
         release-body: ${{ github.event.release.body }}
-        release-name: ${{ env.NAME }}
+        release-name: ${{ steps.get-release-name.outputs.name }}
