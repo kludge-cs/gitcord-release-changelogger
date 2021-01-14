@@ -47,11 +47,11 @@ jobs:
         shell: bash
     steps:
     - name: "Parse release name"
-	  id: "get-release-name"
+      id: "get-release-name"
       run: "::set-output name=name::${RELEASE:-$TAG}"
-	  env:
-	    RELEASE: ${{ github.event.release.name }}
-		TAG: ${{ github.event.release.tag_name }}
+      env:
+        RELEASE: ${{ github.event.release.name }}
+        TAG: ${{ github.event.release.tag_name }}
     - name: "Crosspost changelog to Discord"
       uses: kludge-cs/gitcord-release-changelogger@v2
       with:
@@ -62,14 +62,12 @@ jobs:
 
 # In action
 
-Using the above configuration, the following was performed using a sample from 
-[Sapphire]'s changelogs:
+Using the above configuration, the following was performed upon
+publishing this action's own release:
 
-![RELEASE](https://cdn.discordapp.com/attachments/513492116219887617/798945893566119957/image.png)
+![RELEASE](https://cdn.discordapp.com/attachments/513492116219887617/799337196602916874/unknown.png)
 
 Gets uploaded to Discord in the following format
 (note that markdown and linking is preserved)
 
-![DISCORD-OUTPUT](https://cdn.discordapp.com/attachments/513492116219887617/798947641709822032/Screenshot_20210113-160443_Discord.jpg)
-
-[Sapphire]: https://github.com/sapphire-project
+![DISCORD-OUTPUT](https://cdn.discordapp.com/attachments/513492116219887617/799336159519965214/unknown.png)
