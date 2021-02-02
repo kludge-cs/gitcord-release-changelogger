@@ -1,4 +1,4 @@
-BODY=$(echo "$RELEASE_BODY" | sed -r \
+BODY=$(echo "${RELEASE_BODY}" | sed -r \
 	-e ':a' \
 	-e 'N' \
 	-e '$!ba' \
