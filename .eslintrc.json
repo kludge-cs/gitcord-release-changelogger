@@ -1,0 +1,7 @@
+{
+	"extends": "@kludge-cs/eslint-config-ts",
+	"parserOptions": {
+		"extraFileExtensions": [".json"],
+		"project": "./tsconfig.eslint.json"
+	}
+}

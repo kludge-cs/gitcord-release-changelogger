@@ -1,0 +1,3 @@
+{
+	"extends": "@kludge-cs/ts-build-config"
+}
