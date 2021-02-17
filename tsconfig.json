@@ -1,6 +1,7 @@
 {
 	"extends": "@kludge-cs/ts-build-config",
 	"compilerOptions": {
+		"importHelpers": false,
 		"rootDir": "src",
 		"outDir": "dist",
 		"declaration": true,
