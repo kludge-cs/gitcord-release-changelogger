@@ -22,7 +22,7 @@ export function processMeta(fields: EmbedField[]): EmbedField[] {
 	const working: EmbedField[] = [];
 	fields.forEach((field) => {
 		if (field.value !== "") working.push(field);
-		if (!processed) {
+		else if (!processed) {
 			processed = true;
 			working.push({
 				name: "Meta",
