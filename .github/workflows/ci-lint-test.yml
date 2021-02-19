@@ -30,8 +30,13 @@ jobs:
           git config user.name 'Kludge Cyber Systems (CI)'
           git config user.email contact@kludgecs.co.uk
           git add .
-          ! git commit --no-verify -m 'style: apply lint'
-          git push
+          if git commit --no-verify -m 'style: apply lint'; then
+            if [[ '${{ github.head_ref }}' ]]; then
+              git push origin HEAD:${{ github.head_ref }}
+            else
+              git push
+            fi
+          fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   test-cover:
