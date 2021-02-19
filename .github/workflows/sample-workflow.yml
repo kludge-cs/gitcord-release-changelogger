@@ -10,14 +10,14 @@ jobs:
         shell: bash
     steps:
     - name: "Parse release name"
-      id: "get-release-name"
+      id: get-release-name
       run: "echo ::set-output name=name::${RELEASE:-$TAG}"
       env:
         RELEASE: ${{ github.event.release.name }}
         TAG: ${{ github.event.release.tag_name }}
     - name: "Crosspost changelog to Discord"
-      uses: kludge-cs/gitcord-release-changelogger@v2
+      uses: kludge-cs/gitcord-release-changelogger@v3
       with:
-        discord-webhook: ${{ secrets.RELEASE_WEBHOOK }}
         release-body: ${{ github.event.release.body }}
         release-name: ${{ steps.get-release-name.outputs.name }}
+        webhook-url: ${{ secrets.RELEASE_WEBHOOK }}
