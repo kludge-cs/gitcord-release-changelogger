@@ -1,0 +1,8 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`constants (STATIC) SHOULD match snapshot: constants 1`] = `
+Object {
+  "BODY_MISSING": "# Meta
+This release has no bundled changelog.",
+}
+`;

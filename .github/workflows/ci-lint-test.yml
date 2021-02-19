@@ -1,0 +1,69 @@
+name: "CI: Lint & Test"
+on: [push, pull_request]
+jobs:
+  eslint:
+    name: Lint
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: "[INIT] Checkout repository"
+        uses: actions/checkout@v2
+      - name: "[INIT] Install Node.js 14.x"
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+      - name: "[INIT] Restore dependency cache"
+        id: cache-restore
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node14-${{ hashFiles('**/package-lock.json') }}
+      - name: "[INIT] Install dependencies"
+        if: steps.cache-restore.outputs.cache-hit != 'true'
+        run: npm ci
+      - name: "[EXEC] Lint"
+        run: npm run lint
+      - name: "[EXEC] Push lint fixes"
+        run: |
+          git config user.name 'Kludge Cyber Systems (CI)'
+          git config user.email contact@kludgecs.co.uk
+          git add .
+          if git commit --no-verify -m 'style: apply lint'; then
+            if [[ '${{ github.head_ref }}' ]]; then
+              git push origin HEAD:${{ github.head_ref }}
+            else
+              git push
+            fi
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  test-cover:
+    name: Test & Upload Coverage
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: "[INIT] Checkout repository"
+        uses: actions/checkout@v2
+      - name: "[INIT] Install Node.js 14.x"
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+      - name: "[INIT] Restore dependency cache"
+        id: cache-restore
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node14-${{ hashFiles('**/package-lock.json') }}
+      - name: "[INIT] Install dependencies"
+        if: steps.cache-restore.outputs.cache-hit != 'true'
+        run: npm ci
+      - name: "[EXEC] Test"
+        run: npm run test:ci
+      - name: "[EXEC] Upload coverage to Coveralls"
+        uses: coverallsapp/github-action@v1.1.2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}

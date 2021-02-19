@@ -1,33 +1,30 @@
 # Usage
 
 Gitcord Release Changelogger, as an action, makes use of the following inputs:
-- `discord-webhook`: URL for the Discord webhook.
-- `release-name`: Pre-parsed name of the release, to allow for custom naming
-conventions.
-- `release-body`: Markdown from the release to parse.
+| Name           | Required           | Description | Default |
+|:--------------:|:------------------:|:-----------:|:-------:|
+| `avatar-url`   | :x:                | Avatar URL to use for the Discord message sent to the webhook. | [GitHub icon] |
+| `release-body` | :heavy_check_mark: | Markdown body of the GitHub release. | N/A |
+| `release-name` | :heavy_check_mark: | Name to use when sending the release to Discord. | N/A |
+| `username`     | :x:                | Username to use for the Discord message sent to the webhook. | "GitHub Release" |
+| `webhook-url`  | :x:                | URL for the Discord webhook. Should be passed via secrets. If this isn't set, the action will not mutate the payload output so you can use it yourself. | N/A |
 
 These outputs are also provided:
-- `discord-payload`: The JSON payload to be sent to Discord, returned so you may
-perform any additional parsing before sending to Discord.
-- `discord-api-result`: The `curl` log from Discord.
+- `fields`: Array of parsed embed fields, extracted from the rest of the
+payload.
+- `payload`: JSON payload to be sent to Discord, returned in case you wish to
+parse it further for other platforms.
+- `api-result`: JSON response body from Discord (IF `webhook-url` was supplied).
 
 For more information, see the GitHub actions inputs [usage docs].
 
-This assumes you follow the [Conventional Changelog] specification. This will
-NOT work with other specifications, due to the internal bash-only nature of
-how the markdown is morphed into output JSON. This may be changed in future,
-although for now, note that no other specifications are claimed to be supported.
-
-Also note that as for custom workflow runners, your runner MUST have at least
-BaSH, `curl`, `echo`, and `sed`.
-
 [usage docs]: https://docs.github.com/en/free-pro-team@latest/actions/reference/workflow-syntax-for-github-actions#jobsjob_idstepswith
-[Conventional Changelog]: https://github.com/conventional-changelog/conventional-changelog
+[GitHub icon]: https://github.com/kludge-cs/gitcord-release-changelogger/raw/master/GitHub-Mark-120px-plus.png
 
 # Examples
 
 Note that due to the modular nature of gitcord-release-changelogger, you may
-supply an empty webhook address and just use the `discord-payload` output to
+choose to pass no webhook address and just use the `discord-payload` output to 
 perform your own additional pre-parsing before you send the payload to a Discord
 webhook.
 
@@ -47,17 +44,17 @@ jobs:
         shell: bash
     steps:
     - name: "Parse release name"
-      id: "get-release-name"
+      id: get-release-name
       run: "echo ::set-output name=name::${RELEASE:-$TAG}"
       env:
         RELEASE: ${{ github.event.release.name }}
         TAG: ${{ github.event.release.tag_name }}
     - name: "Crosspost changelog to Discord"
-      uses: kludge-cs/gitcord-release-changelogger@v2
+      uses: kludge-cs/gitcord-release-changelogger@v3
       with:
-        discord-webhook: ${{ secrets.RELEASE_WEBHOOK }}
         release-body: ${{ github.event.release.body }}
-        release-name: ${{ steps.get-release-name.outputs.name }}```
+        release-name: ${{ steps.get-release-name.outputs.name }}
+        webhook-url: ${{ secrets.RELEASE_WEBHOOK }}
 ```
 
 # In action

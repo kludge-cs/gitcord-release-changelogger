@@ -1,0 +1,70 @@
+name: "CD: Release"
+on:
+  push:
+    branches:
+      - master
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: "[INIT] Checkout repository"
+        uses: actions/checkout@v1
+      - name: "[INIT] Setup Node.js 14.x"
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+      - name: "[INIT] Restore dependency cache"
+        id: cache-restore
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node14-${{ hashFiles('**/package-lock.json') }}
+      - name: "[INIT] Install dependencies"
+        if: steps.cache-restore.outputs.cache-hit != 'true'
+        run: npm ci
+      - name: "[EXEC] Build"
+        run: npm run package
+      - name: "[EXEC] Update build branch"
+        run: |
+          git config user.name 'Kludge Cyber Systems (CI)'
+          git config user.email contact@kludgecs.co.uk
+          git add dist
+          git commit -m 'build: latest'
+          git push
+          if [[ git checkout --orphan build ]]; then
+            git restore --staged .
+            git add .gitignore CHANGELOG.md README.md LICENSE action.yml package.json package-lock.json dist
+          else
+            git stash
+            git checkout build
+            git stash pop
+            git add .
+          fi
+          git commit -m 'build: latest'
+          git push --set-upstream origin build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: "[INIT] Checkout repository@build"
+        uses: actions/checkout@v1
+      - name: "[INIT] Setup Node.js 14.x"
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+      - name: "[INIT] Restore dependency cache"
+        id: cache-restore
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node14-${{ hashFiles('**/package-lock.json') }}
+      - name: "[INIT] Install dependencies"
+        if: steps.cache-restore.outputs.cache-hit != 'true'
+        run: npm ci
+      - name: "[EXEC] Release"
+        run: npx semantic-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
