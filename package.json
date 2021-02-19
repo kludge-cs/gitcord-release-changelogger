@@ -22,6 +22,7 @@
 		"lint": "eslint src --ext ts --fix",
 		"test": "jest",
 		"test:watch": "jest --watch",
+		"test:ci": "jest --ci --coverage=true",
 		"build": "tsc -b src",
 		"package": "rollup --config",
 		"clean": "tsc -b src --clean",
