@@ -1,0 +1,22 @@
+name: "CD: Release"
+on:
+  push:
+    branches:
+      - master
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: "[INIT] Checkout repository"
+        uses: actions/checkout@v1
+      - name: "[INIT] Setup Node.js 14.x"
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+      - name: "[INIT] Install dependencies"
+        run: npm ci
+      - name: "[EXEC] Release"
+        run: npx semantic-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
