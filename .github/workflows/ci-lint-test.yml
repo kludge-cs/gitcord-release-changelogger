@@ -76,13 +76,13 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           flag-name: run-node${{ matrix.node }}
           parallel: true
-    cover:
-      name: Finalize Coverage Report
-      needs: test-cover
-      runs-on: ubuntu-latest
-      steps:
-        - name: "[POST] Finalize Coveralls collection"
-          uses: coverallsapp/github-action@v1.1.2
-          with:
-            github-token: ${{ secrets.GITHUB_TOKEN }}
-            parallel-finished: true
+  cover:
+    name: Finalize Coverage Report
+    needs: test-cover
+    runs-on: ubuntu-latest
+    steps:
+      - name: "[POST] Finalize Coveralls collection"
+        uses: coverallsapp/github-action@v1.1.2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          parallel-finished: true
