@@ -27,5 +27,5 @@ outputs:
   api-result:
     description: "JSON response body from Discord (IF `webhook-url` is set)."
 runs:
-  using: node14
+  using: node12
   main: dist/index.js
