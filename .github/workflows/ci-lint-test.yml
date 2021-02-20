@@ -7,25 +7,29 @@ jobs:
     defaults:
       run:
         shell: bash
+    strategy:
+      matrix:
+        node: [12, 14]
     steps:
       - name: "[INIT] Checkout repository"
         uses: actions/checkout@v2
-      - name: "[INIT] Install Node.js 14.x"
+      - name: "[INIT] Install Node.js ${{ matrix.node }}"
         uses: actions/setup-node@v2
         with:
-          node-version: 14
+          node-version: ${{ matrix.node }}
       - name: "[INIT] Restore dependency cache"
         id: cache-restore
         uses: actions/cache@v2
         with:
           path: node_modules
-          key: ${{ runner.os }}-node14-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.os }}-node${{ matrix.node }}-${{ hashFiles('**/package-lock.json') }}
       - name: "[INIT] Install dependencies"
-        if: steps.cache-restore.outputs.cache-hit != 'true'
+        if: !steps.cache-restore.outputs.cache-hit
         run: npm ci
       - name: "[EXEC] Lint"
         run: npm run lint
       - name: "[EXEC] Push lint fixes"
+        if: matrix.node == 14 
         run: |
           git config user.name 'Kludge Cyber Systems (CI)'
           git config user.email contact@kludgecs.co.uk
@@ -45,19 +49,22 @@ jobs:
     defaults:
       run:
         shell: bash
+    strategy:
+      matrix:
+        node: [12, 14]
     steps:
       - name: "[INIT] Checkout repository"
         uses: actions/checkout@v2
-      - name: "[INIT] Install Node.js 14.x"
+      - name: "[INIT] Install Node.js ${{ matrix.node }}"
         uses: actions/setup-node@v2
         with:
-          node-version: 14
+          node-version: ${{ matrix.node }}
       - name: "[INIT] Restore dependency cache"
         id: cache-restore
         uses: actions/cache@v2
         with:
           path: node_modules
-          key: ${{ runner.os }}-node14-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.os }}-node${{ matrix.node }}-${{ hashFiles('**/package-lock.json') }}
       - name: "[INIT] Install dependencies"
         if: steps.cache-restore.outputs.cache-hit != 'true'
         run: npm ci
@@ -67,3 +74,15 @@ jobs:
         uses: coverallsapp/github-action@v1.1.2
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          flag-name: run-node${{ matrix.node }}
+          parallel: true
+    cover:
+      name: Finalize Coverage Report
+      needs: test-cover
+      runs-on: ubuntu-latest
+      steps:
+        - name: "[POST] Finalize Coveralls collection"
+          uses: coverallsapp/github-action@v1.1.2
+          with:
+            github-token: ${{ secrets.GITHUB_TOKEN }}
+            parallel-finished: true
