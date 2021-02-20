@@ -1,0 +1,87 @@
+{
+	"name": "@kludge-cs/gitcord-release-changelogger",
+	"version": "3.0.0",
+	"description": "Crossposter for GitHub releases to Discord.",
+	"author": {
+		"name": "Nytelife26 (Tyler J. Russell)",
+		"email": "nytelife@protonmail.com",
+		"url": "https://github.com/Nytelife26"
+	},
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"exports": {
+		"import": "./dist/index.js",
+		"require": "./dist/index.js"
+	},
+	"files": [
+		"dist",
+		"!dist/*.tsbuildinfo"
+	],
+	"scripts": {
+		"lint": "eslint src --ext ts --fix",
+		"test": "jest",
+		"test:watch": "jest --watch",
+		"test:ci": "jest --ci --coverage=true",
+		"build": "tsc -b src",
+		"package": "rollup --config",
+		"clean": "tsc -b src --clean",
+		"watch": "tsc -b src -w",
+		"commit": "git-cz"
+	},
+	"license": "MIT",
+	"dependencies": {
+		"@actions/core": "^1.2.6",
+		"@helperdiscord/centra": "^2.0.1",
+		"tslib": "^1.14.1"
+	},
+	"devDependencies": {
+		"@commitlint/cli": "^11.0.0",
+		"@commitlint/config-conventional": "^11.0.0",
+		"@kludge-cs/eslint-config-js": "^1.0.1",
+		"@kludge-cs/eslint-config-ts": "^1.0.3",
+		"@kludge-cs/ts-build-config": "^1.0.4",
+		"@rollup/plugin-commonjs": "^17.1.0",
+		"@rollup/plugin-node-resolve": "^11.2.0",
+		"@semantic-release/changelog": "^5.0.1",
+		"@semantic-release/git": "^9.0.0",
+		"@semantic-release/github": "^7.2.0",
+		"@semantic-release/npm": "^7.0.10",
+		"@types/jest": "^26.0.20",
+		"@types/node": "^14.14.21",
+		"@typescript-eslint/eslint-plugin": "^4.14.0",
+		"@typescript-eslint/parser": "^4.14.0",
+		"cz-conventional-changelog": "^3.3.0",
+		"eslint": "^7.18.0",
+		"eslint-plugin-json": "^2.1.2",
+		"husky": "^4.3.8",
+		"jest": "^26.6.3",
+		"jest-circus": "^26.6.3",
+		"lint-staged": "^10.5.3",
+		"rollup": "^2.39.0",
+		"rollup-plugin-cleaner": "^1.0.0",
+		"rollup-plugin-terser": "^7.0.2",
+		"rollup-plugin-typescript2": "^0.30.0",
+		"semantic-release": "^17.0.2",
+		"ts-jest": "^26.4.4",
+		"ts-node": "^9.1.1",
+		"typescript": "^4.1.3"
+	},
+	"bugs": {
+		"url": "https://github.com/kludge-cs/gitcord-release-changelogger/issues"
+	},
+	"homepage": "https://github.com/kludge-cs/gitcord-release-changelogger#readme",
+	"config": {
+		"commitizen": {
+			"path": "cz-conventional-changelog"
+		}
+	},
+	"husky": {
+		"hooks": {
+			"commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+			"pre-commit": "lint-staged && jest -o"
+		}
+	},
+	"lint-staged": {
+		"*\\.(ts)": "eslint --ext ts --fix"
+	}
+}

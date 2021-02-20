@@ -1,0 +1,31 @@
+name: "Gitcord Release Changelogger"
+description: "Pipe changelog information from a GitHub release to Discord."
+author: "Tyler J. Russell (Kludge Cyber Systems)"
+inputs:
+  avatar-url:
+    description: "Avatar URL to use for the Discord message sent to the webhook."
+    default: "https://github.com/kludge-cs/gitcord-release-changelogger/raw/master/GitHub-Mark-120px-plus.png"
+    required: false
+  release-body:
+    description: "Markdown body of the GitHub release."
+    required: true
+  release-name:
+    description: "Name to use when sending the release to Discord."
+    required: true
+  username:
+    description: "Username to use for the Discord message sent to the webhook."
+    default: "GitHub Release"
+    required: false
+  webhook-url:
+    description: "URL for the Discord webhook. Should be passed via secrets. If this isn't set, the action will do nothing with the payload output so you can use it yourself."
+    required: false
+outputs:
+  fields:
+    description: "Array of parsed embed fields, extracted from the rest of the payload."
+  payload:
+    description: "JSON payload to be sent to the webhook, returned in case you wish to parse it further for other platforms."
+  api-result:
+    description: "JSON response body from Discord (IF `webhook-url` is set)."
+runs:
+  using: node14
+  main: dist/index.js
