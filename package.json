@@ -18,7 +18,6 @@
 		"!dist/*.tsbuildinfo"
 	],
 	"scripts": {
-		"prepare": "npm run build",
 		"lint": "eslint src --ext ts --fix",
 		"test": "jest",
 		"test:watch": "jest --watch",
