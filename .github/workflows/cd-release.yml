@@ -8,12 +8,12 @@ jobs:
     name: Release
     runs-on: ubuntu-latest
     steps:
-      - name: "[INIT] Checkout repository@build"
-        uses: actions/checkout@v1
+      - name: "[INIT] Checkout repository"
+        uses: actions/checkout@v2
       - name: "[INIT] Setup Node.js 14.x"
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v2
         with:
-          node-version: 14.x
+          node-version: 14
       - name: "[INIT] Restore dependency cache"
         id: cache-restore
         uses: actions/cache@v2
@@ -33,11 +33,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "[INIT] Checkout repository"
-        uses: actions/checkout@v1
-      - name: "[INIT] Setup Node.js 14.x"
-        uses: actions/setup-node@v1
+        uses: actions/checkout@v2
         with:
-          node-version: 14.x
+          fetch-depth: 0
+      - name: "[INIT] Setup Node.js 14.x"
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14
       - name: "[INIT] Restore dependency cache"
         id: cache-restore
         uses: actions/cache@v2
@@ -53,13 +55,22 @@ jobs:
         run: |
           git config --global user.name 'Kludge Cyber Systems (CI)'
           git config --global user.email contact@kludgecs.co.uk
-          git clone https://github.com/kludge-cs/gitcord-release-changelogger.git out -b build
-          rm -rf out/dist/*
+          mkdir $GITHUB_WORKSPACE/../transfer
           files="LICENSE README.md CHANGELOG.md package*.json action.yml dist"
-          for file in $files; do cp -r $file out || true; done
-          cd out
+          for file in $files; do cp -r $file $GITHUB_WORKSPACE/../transfer || true; done
+          if [[ $(git checkout build) ]]; then
+            echo -e "# Using existing build"
+            git restore --staged . || true
+          else
+            echo -e "# Creating orphan build"
+            git checkout --orphan build
+            git rm --cached -r .
+            git commit --allow-empty -m 'chore: initial commit' || true
+          fi
+          git clean -fdx && git reset --hard HEAD
+          rm -rf dist && cp -r $GITHUB_WORKSPACE/../transfer/* ./
           git add .
           git commit -m "build: latest @${GITHUB_SHA}" || true
-          git push origin build
+          git push --set-upstream origin build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
