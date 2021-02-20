@@ -1,4 +1,4 @@
-# [3.0.0](https://github.com/kludge-cs/gitcord-release-changelogger/compare/v2.0.0...v3.0.0) (2021-02-20)
+# [3.0.0-alpha](https://github.com/kludge-cs/gitcord-release-changelogger/compare/v2.0.0...v3.0.0-alpha) (2021-02-20)
 
 
 ### Code Refactoring
