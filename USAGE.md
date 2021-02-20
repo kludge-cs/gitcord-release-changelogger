@@ -37,7 +37,7 @@ on:
   release:
     types: [published]
 jobs:
-  release:
+  crosspost:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -50,7 +50,7 @@ jobs:
         RELEASE: ${{ github.event.release.name }}
         TAG: ${{ github.event.release.tag_name }}
     - name: "Crosspost changelog to Discord"
-      uses: kludge-cs/gitcord-release-changelogger@v3
+      uses: kludge-cs/gitcord-release-changelogger@v3.0.0
       with:
         release-body: ${{ github.event.release.body }}
         release-name: ${{ steps.get-release-name.outputs.name }}
