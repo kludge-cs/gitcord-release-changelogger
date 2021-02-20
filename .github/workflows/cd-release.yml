@@ -21,7 +21,7 @@ jobs:
           path: node_modules
           key: ${{ runner.os }}-node14-${{ hashFiles('**/package-lock.json') }}
       - name: "[INIT] Install dependencies"
-        if: !steps.cache-restore.outputs.cache-hit
+        if: ${{ !steps.cache-restore.outputs.cache-hit }}
         run: npm ci
       - name: "[EXEC] Release"
         run: npx semantic-release
@@ -47,7 +47,7 @@ jobs:
           path: node_modules
           key: ${{ runner.os }}-node14-${{ hashFiles('**/package-lock.json') }}
       - name: "[INIT] Install dependencies"
-        if: !steps.cache-restore.outputs.cache-hit
+        if: ${{ !steps.cache-restore.outputs.cache-hit }}
         run: npm ci
       - name: "[EXEC] Build"
         run: npm run package
