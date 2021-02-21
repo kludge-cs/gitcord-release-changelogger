@@ -39,6 +39,9 @@ jobs:
           git push --force
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: "[POST] Clean up failed release"
+        if: failure()
+        run: git reset HEAD^ && git push --force
   build:
     name: Build
     needs: release
