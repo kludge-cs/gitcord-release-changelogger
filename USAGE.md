@@ -62,9 +62,9 @@ jobs:
 Using the above configuration, the following was performed upon
 publishing this action's own release:
 
-![RELEASE](https://cdn.discordapp.com/attachments/513492116219887617/799337196602916874/unknown.png)
+![RELEASE](https://cdn.discordapp.com/attachments/513492116219887617/813149241345572914/unknown.png)
 
 Gets uploaded to Discord in the following format
 (note that markdown and linking is preserved)
 
-![DISCORD-OUTPUT](https://cdn.discordapp.com/attachments/513492116219887617/799336159519965214/unknown.png)
+![DISCORD-OUTPUT](https://cdn.discordapp.com/attachments/513492116219887617/813149060575789106/unknown.png)
