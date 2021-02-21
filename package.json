@@ -1,6 +1,6 @@
 {
 	"name": "@kludge-cs/gitcord-release-changelogger",
-	"version": "3.0.0",
+	"version": "3.0.0-source.1",
 	"description": "Crossposter for GitHub releases to Discord.",
 	"author": {
 		"name": "Nytelife26 (Tyler J. Russell)",
