@@ -4,7 +4,7 @@ export function cleanBody(body: string): string {
 	return body
 		.replace(/\r/g, "")
 		.replace(/\n\n/g, "\n")
-		.replace(/(-|\*) +([*a-zA-Z0-9])/g, "$2");
+		.replace(/\n(-|\*) +([*a-zA-Z0-9])/g, "\n$2");
 }
 
 export function parseBody(body: string): EmbedField[] {
