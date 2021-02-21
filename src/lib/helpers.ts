@@ -2,8 +2,9 @@ import type { EmbedField } from "../types/index";
 
 export function cleanBody(body: string): string {
 	return body
+		.replace(/\r/g, "")
 		.replace(/\n\n/g, "\n")
-		.replace(/- +([*a-zA-Z0-9])/g, "$1");
+		.replace(/(-|\*) +([*a-zA-Z0-9])/g, "$2");
 }
 
 export function parseBody(body: string): EmbedField[] {
