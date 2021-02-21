@@ -27,7 +27,16 @@ jobs:
         if: ${{ !steps.cache-restore.outputs.cache-hit }}
         run: npm ci
       - name: "[EXEC] Release"
-        run: npx semantic-release
+        run: |
+          git config --global user.name 'Kludge Cyber Systems (CI)'
+          git config --global user.email contact@kludge-cs.co.uk
+          npx semantic-release
+          MESSAGE=$(git log -1 --pretty=%B)
+          git reset HEAD^
+          sed --in-place -re 's/"version": "(.+)-.+"/"version": "\1"/' package.json
+          git add .
+          git commit -m "${MESSAGE}"
+          git push --force
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   build:
@@ -60,8 +69,9 @@ jobs:
       - name: "[EXEC] Update build branch"
         run: |
           git config --global user.name 'Kludge Cyber Systems (CI)'
-          git config --global user.email contact@kludgecs.co.uk
+          git config --global user.email contact@kludge-cs.co.uk
           mkdir $GITHUB_WORKSPACE/../transfer
+          PACKAGE_VERSION=$(node -pe "require('./package.json').version")
           files="LICENSE README.md CHANGELOG.md package*.json action.yml dist"
           for file in $files; do cp -r $file $GITHUB_WORKSPACE/../transfer || true; done
           if [[ $(git checkout build) ]]; then
@@ -76,7 +86,8 @@ jobs:
           git clean -fdx && git reset --hard HEAD
           rm -rf dist && cp -r $GITHUB_WORKSPACE/../transfer/* ./
           git add .
-          git commit -m "build: latest @${GITHUB_SHA}" || true
-          git push --set-upstream origin build
+          git commit -m "build: v${PACKAGE_VERSION}" || true
+          git tag -f "v${PACKAGE_VERSION}"
+          git push --tags --set-upstream origin build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

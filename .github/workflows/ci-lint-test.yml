@@ -31,7 +31,7 @@ jobs:
       - name: "[EXEC] Push lint fixes" 
         run: |
           git config user.name 'Kludge Cyber Systems (CI)'
-          git config user.email contact@kludgecs.co.uk
+          git config user.email contact@kludge-cs.co.uk
           git add .
           if git commit --no-verify -m 'style: apply lint'; then
             if [[ '${{ github.head_ref }}' ]]; then
