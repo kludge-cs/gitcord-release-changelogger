@@ -32,12 +32,13 @@ async function main() {
 	gh.setOutput("payload", JSON.stringify(payload));
 
 	if (working.webhook) {
-		const response = await request(working.webhook, "POST")
+		const response = await request(`${working.webhook}?wait=true`, "POST")
 			.header({"Content-Type": "application/json"})
 			.body(payload)
 			.send();
-		gh.setOutput("api-result", response.body.toString());
-		if (response.statusCode !== 200) gh.setFailed(response.body.toString());
+		const responseBody = response.text();
+		gh.setOutput("api-result", responseBody);
+		if (response.statusCode !== 200) gh.setFailed(responseBody);
 	}
 }
 
