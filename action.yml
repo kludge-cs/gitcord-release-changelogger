@@ -4,7 +4,7 @@ author: "Tyler J. Russell (Kludge Cyber Systems)"
 inputs:
   avatar-url:
     description: "Avatar URL to use for the Discord message sent to the webhook."
-    default: "https://github.com/kludge-cs/gitcord-release-changelogger/raw/master/GitHub-Mark-120px-plus.png"
+    default: "https://github.com/kludge-cs/gitcord-release-changelogger/raw/main/GitHub-Mark-120px-plus.png"
     required: false
   release-body:
     description: "Markdown body of the GitHub release."

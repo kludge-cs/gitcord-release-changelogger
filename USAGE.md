@@ -19,7 +19,7 @@ parse it further for other platforms.
 For more information, see the GitHub actions inputs [usage docs].
 
 [usage docs]: https://docs.github.com/en/free-pro-team@latest/actions/reference/workflow-syntax-for-github-actions#jobsjob_idstepswith
-[GitHub icon]: https://github.com/kludge-cs/gitcord-release-changelogger/raw/master/GitHub-Mark-120px-plus.png
+[GitHub icon]: https://github.com/kludge-cs/gitcord-release-changelogger/raw/main/GitHub-Mark-120px-plus.png
 
 # Examples
 
